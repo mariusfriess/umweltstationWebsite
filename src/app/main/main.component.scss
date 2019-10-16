@@ -1,0 +1,14 @@
+h1 {
+  font-family: sans-serif;
+}
+
+.chartWrapper {
+  display: flex;
+
+  .chartBox {
+    h1 {
+      font-family: sans-serif;
+      font-weight: 500;
+    }
+  }
+}
