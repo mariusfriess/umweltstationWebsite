@@ -1,15 +1,47 @@
-<h1>Umweltstation</h1>
-<div class="chartWrapper">
-  <div class="chartBox">
-    <h1>Temperatur</h1>
-    <canvas id="tempChart" width="300" height="200"></canvas>
+<div class="title">
+  <img src="assets/logo_jdsr.jpg" alt="jdsr logo" />
+  <span></span>
+  <h1>Umweltstation</h1>
+</div>
+<div class="pageWrapper">
+  <div class="pageInnerWrapper">
+    <h2>Indoor</h2>
+    <div class="chartWrapper">
+      <div class="chartBox">
+        <span class="chartValue">{{ tempIndoor }} °C</span>
+        <span class="chartTitle">Temperatur</span>
+        <canvas id="tempChart" width="300" height="200"></canvas>
+      </div>
+      <div class="chartBox">
+        <span class="chartValue">{{ humIndoor }} %</span>
+        <span class="chartTitle">Luftfeuchtigkeit</span>
+        <canvas id="humChart" width="300" height="200"></canvas>
+      </div>
+      <div class="chartBox">
+        <span class="chartValue">{{ co2Indoor }} ppm</span>
+        <span class="chartTitle">Kohlenstoffdioxid</span>
+        <canvas id="co2Chart" width="300" height="200"></canvas>
+      </div>
+    </div>
   </div>
-  <div class="chartBox">
-    <h1>Luftfeuchtigkeit</h1>
-    <canvas id="humChart" width="300" height="200"></canvas>
-  </div>
-  <div class="chartBox">
-    <h1>CO2</h1>
-    <canvas id="co2Chart" width="300" height="200"></canvas>
+  <div class="pageInnerWrapper">
+    <h2>Outdoor</h2>
+    <div class="chartWrapper">
+      <div class="chartBox">
+        <span class="chartValue">{{ tempOutdoor }} °C</span>
+        <span class="chartTitle">Temperatur</span>
+        <canvas id="tempChartOut" width="300" height="200"></canvas>
+      </div>
+      <div class="chartBox">
+        <span class="chartValue">{{ humOutdoor }} %</span>
+        <span class="chartTitle">Luftfeuchtigkeit</span>
+        <canvas id="humChartOut" width="300" height="200"></canvas>
+      </div>
+      <div class="chartBox">
+        <span class="chartValue">{{ co2Outdoor }} ppm</span>
+        <span class="chartTitle">Kohlenstoffdioxid</span>
+        <canvas id="co2ChartOut" width="300" height="200"></canvas>
+      </div>
+    </div>
   </div>
 </div>

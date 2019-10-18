@@ -9,7 +9,8 @@ import { IMqttMessage, MqttModule, IMqttServiceOptions } from "ngx-mqtt";
 export const MQTT_SERVICE_OPTIONS: IMqttServiceOptions = {
   hostname: "test.mosquitto.org",
   port: 8081,
-  path: "/jdsr"
+  path: "/jdsr",
+  protocol: "wss"
 };
 
 @NgModule({

@@ -3,6 +3,36 @@ import { MqttService, IMqttMessage } from "ngx-mqtt";
 import { Subscription } from "rxjs";
 import { Chart } from "chart.js";
 
+const chartOptions = {
+  legend: {
+    display: false
+  },
+  scales: {
+    yAxes: [
+      {
+        display: true,
+        ticks: {
+          beginAtZero: false,
+          precision: 2,
+          maxTicksLimit: 6
+        }
+      }
+    ],
+    xAxes: [
+      {
+        ticks: {
+          maxTicksLimit: 4
+        }
+      }
+    ]
+  },
+  layout: {
+    padding: {
+      top: 20
+    }
+  }
+};
+
 @Component({
   selector: "app-main",
   templateUrl: "./main.component.html",
@@ -11,9 +41,20 @@ import { Chart } from "chart.js";
 export class MainComponent implements AfterViewInit {
   private subscription: Subscription;
   public message: string;
-  tempChart: Chart;
-  humChart: Chart;
-  co2Chart: Chart;
+  tempChartIn: Chart;
+  humChartIn: Chart;
+  co2ChartIn: Chart;
+
+  tempChartOut: Chart;
+  humChartOut: Chart;
+  co2ChartOut: Chart;
+
+  tempIndoor = 0;
+  tempOutdoor = 0;
+  humIndoor = 0;
+  humOutdoor = 0;
+  co2Indoor = 0;
+  co2Outdoor = 0;
 
   tempLow = 100;
   tempHigh = 0;
@@ -22,7 +63,7 @@ export class MainComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     const ctx = document.getElementById("tempChart");
-    this.tempChart = new Chart(ctx, {
+    this.tempChartIn = new Chart(ctx, {
       type: "line",
       data: {
         labels: "",
@@ -35,39 +76,11 @@ export class MainComponent implements AfterViewInit {
           }
         ]
       },
-      options: {
-        legend: {
-          display: false
-        },
-        scales: {
-          yAxes: [
-            {
-              display: true,
-              ticks: {
-                beginAtZero: false,
-                precision: 2,
-                maxTicksLimit: 6
-              }
-            }
-          ],
-          xAxes: [
-            {
-              ticks: {
-                maxTicksLimit: 8
-              }
-            }
-          ]
-        },
-        layout: {
-          padding: {
-            top: 20
-          }
-        }
-      }
+      options: chartOptions
     });
 
     const ctx2 = document.getElementById("humChart");
-    this.humChart = new Chart(ctx2, {
+    this.humChartIn = new Chart(ctx2, {
       type: "line",
       data: {
         labels: "",
@@ -80,39 +93,11 @@ export class MainComponent implements AfterViewInit {
           }
         ]
       },
-      options: {
-        legend: {
-          display: false
-        },
-        scales: {
-          yAxes: [
-            {
-              display: true,
-              ticks: {
-                beginAtZero: false,
-                precision: 2,
-                maxTicksLimit: 6
-              }
-            }
-          ],
-          xAxes: [
-            {
-              ticks: {
-                maxTicksLimit: 8
-              }
-            }
-          ]
-        },
-        layout: {
-          padding: {
-            top: 20
-          }
-        }
-      }
+      options: chartOptions
     });
 
     const ctx3 = document.getElementById("co2Chart");
-    this.co2Chart = new Chart(ctx3, {
+    this.co2ChartIn = new Chart(ctx3, {
       type: "line",
       data: {
         labels: "",
@@ -125,35 +110,58 @@ export class MainComponent implements AfterViewInit {
           }
         ]
       },
-      options: {
-        legend: {
-          display: false
-        },
-        scales: {
-          yAxes: [
-            {
-              display: true,
-              ticks: {
-                beginAtZero: false,
-                precision: 2,
-                maxTicksLimit: 6
-              }
-            }
-          ],
-          xAxes: [
-            {
-              ticks: {
-                maxTicksLimit: 8
-              }
-            }
-          ]
-        },
-        layout: {
-          padding: {
-            top: 20
+      options: chartOptions
+    });
+
+    const ctx4 = document.getElementById("tempChartOut");
+    this.tempChartOut = new Chart(ctx4, {
+      type: "line",
+      data: {
+        labels: "",
+        datasets: [
+          {
+            label: "Temperatur",
+            data: [],
+            borderColor: "#2196F3",
+            backgroundColor: "rgba(33, 150, 243,0.1)"
           }
-        }
-      }
+        ]
+      },
+      options: chartOptions
+    });
+
+    const ctx5 = document.getElementById("humChartOut");
+    this.humChartOut = new Chart(ctx5, {
+      type: "line",
+      data: {
+        labels: "",
+        datasets: [
+          {
+            label: "Temperatur",
+            data: [],
+            borderColor: "#2196F3",
+            backgroundColor: "rgba(33, 150, 243,0.1)"
+          }
+        ]
+      },
+      options: chartOptions
+    });
+
+    const ctx6 = document.getElementById("co2ChartOut");
+    this.co2ChartOut = new Chart(ctx6, {
+      type: "line",
+      data: {
+        labels: "",
+        datasets: [
+          {
+            label: "Temperatur",
+            data: [],
+            borderColor: "#2196F3",
+            backgroundColor: "rgba(33, 150, 243,0.1)"
+          }
+        ]
+      },
+      options: chartOptions
     });
 
     this.subscription = this._mqttService
@@ -167,66 +175,80 @@ export class MainComponent implements AfterViewInit {
   }
 
   handleMessage(msg: IMqttMessage) {
-    if (msg.topic == "umweltstation/temp") {
-      this.handleTemp(msg);
+    if (msg.topic == "umweltstation/indoor/temp") {
+      this.handleTemp(msg, "indoor");
     }
-    if (msg.topic == "umweltstation/hum") {
-      this.handleHum(msg);
+    if (msg.topic == "umweltstation/indoor/hum") {
+      this.handleHum(msg, "indoor");
     }
-    if (msg.topic == "umweltstation/co2") {
-      this.handleCo2(msg);
+    if (msg.topic == "umweltstation/indoor/co2") {
+      this.handleCo2(msg, "indoor");
+    }
+    if (msg.topic == "umweltstation/outdoor/temp") {
+      this.handleTemp(msg, "outdoor");
+    }
+    if (msg.topic == "umweltstation/outdoor/hum") {
+      this.handleHum(msg, "outdoor");
+    }
+    if (msg.topic == "umweltstation/outdoor/co2") {
+      this.handleCo2(msg, "outdoor");
     }
   }
 
-  handleCo2(msg: IMqttMessage) {
-    let d = new Date();
-    this.co2Chart.data.labels.push(d.getHours() + ":" + d.getMinutes());
-    this.co2Chart.data.datasets[0].data.push(
-      parseFloat(msg.payload.toString())
-    );
-    if (this.co2Chart.data.datasets[0].data.length > 100) {
-      this.co2Chart.data.labels.shift();
-      this.co2Chart.data.datasets[0].data.shift();
+  handleTemp(msg: IMqttMessage, s: string) {
+    let chart;
+    if (s == "indoor") {
+      chart = this.tempChartIn;
+      this.tempIndoor = parseFloat(msg.payload.toString());
+    } else {
+      chart = this.tempChartOut;
+      this.tempOutdoor = parseFloat(msg.payload.toString());
     }
-    this.co2Chart.update();
+    let d = new Date();
+    chart.data.labels.push(d.getHours() + ":" + d.getMinutes());
+    chart.data.datasets[0].data.push(parseFloat(msg.payload.toString()));
+    if (chart.data.datasets[0].data.length > 100) {
+      chart.data.labels.shift();
+      chart.data.datasets[0].data.shift();
+    }
+    chart.update();
   }
 
-  handleHum(msg: IMqttMessage) {
-    let d = new Date();
-    this.humChart.data.labels.push(d.getHours() + ":" + d.getMinutes());
-    this.humChart.data.datasets[0].data.push(
-      parseFloat(msg.payload.toString())
-    );
-    /*
-    if (parseFloat(msg.payload.toString()) < this.tempLow)
-      this.tempLow = parseFloat(msg.payload.toString());
-    if (parseFloat(msg.payload.toString()) > this.tempHigh)
-      this.tempHigh = parseFloat(msg.payload.toString());
-    this.tempChart.options.scales.yAxes[0].ticks.min = this.tempLow - 0.2;
-    this.tempChart.options.scales.yAxes[0].ticks.max = this.tempHigh + 0.2;*/
-    if (this.humChart.data.datasets[0].data.length > 100) {
-      this.humChart.data.labels.shift();
-      this.humChart.data.datasets[0].data.shift();
+  handleHum(msg: IMqttMessage, s: string) {
+    let chart;
+    if (s == "indoor") {
+      chart = this.humChartIn;
+      this.humIndoor = parseFloat(msg.payload.toString());
+    } else {
+      chart = this.humChartOut;
+      this.humOutdoor = parseFloat(msg.payload.toString());
     }
-    this.humChart.update();
+    let d = new Date();
+    chart.data.labels.push(d.getHours() + ":" + d.getMinutes());
+    chart.data.datasets[0].data.push(parseFloat(msg.payload.toString()));
+    if (chart.data.datasets[0].data.length > 100) {
+      chart.data.labels.shift();
+      chart.data.datasets[0].data.shift();
+    }
+    chart.update();
   }
 
-  handleTemp(msg: IMqttMessage) {
-    let d = new Date();
-    this.tempChart.data.labels.push(d.getHours() + ":" + d.getMinutes());
-    this.tempChart.data.datasets[0].data.push(
-      parseFloat(msg.payload.toString())
-    );
-    if (parseFloat(msg.payload.toString()) < this.tempLow)
-      this.tempLow = parseFloat(msg.payload.toString());
-    if (parseFloat(msg.payload.toString()) > this.tempHigh)
-      this.tempHigh = parseFloat(msg.payload.toString());
-    this.tempChart.options.scales.yAxes[0].ticks.min = this.tempLow - 0.2;
-    this.tempChart.options.scales.yAxes[0].ticks.max = this.tempHigh + 0.2;
-    if (this.tempChart.data.datasets[0].data.length > 100) {
-      this.tempChart.data.labels.shift();
-      this.tempChart.data.datasets[0].data.shift();
+  handleCo2(msg: IMqttMessage, s: string) {
+    let chart;
+    if (s == "indoor") {
+      chart = this.co2ChartIn;
+      this.co2Indoor = parseFloat(msg.payload.toString());
+    } else {
+      chart = this.co2ChartOut;
+      this.co2Outdoor = parseFloat(msg.payload.toString());
     }
-    this.tempChart.update();
+    let d = new Date();
+    chart.data.labels.push(d.getHours() + ":" + d.getMinutes());
+    chart.data.datasets[0].data.push(parseFloat(msg.payload.toString()));
+    if (chart.data.datasets[0].data.length > 100) {
+      chart.data.labels.shift();
+      chart.data.datasets[0].data.shift();
+    }
+    chart.update();
   }
 }
