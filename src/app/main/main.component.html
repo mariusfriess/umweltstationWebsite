@@ -1,46 +1,115 @@
-<div class="title">
-  <img src="assets/logo_jdsr.jpg" alt="jdsr logo" />
-  <span></span>
-  <h1>Umweltstation</h1>
+<div class="header">
+  <div class="title">
+    <img src="assets/logo_jdsr.jpg" alt="jdsr logo" />
+    <span></span>
+    <a href="https://umweltstation-jdsr.web.app" target="_self"
+      >Umweltstation</a
+    >
+  </div>
+  <div class="subtitle">
+    <span>
+      {{ now.getHours() | number: "2.0" }}:{{
+        now.getMinutes() | number: "2.0"
+      }}:{{ now.getSeconds() | number: "2.0" }} Uhr
+    </span>
+  </div>
 </div>
 <div class="pageWrapper">
   <div class="pageInnerWrapper">
-    <h2>Indoor</h2>
     <div class="chartWrapper">
       <div class="chartBox">
-        <span class="chartValue">{{ tempIndoor }} °C</span>
-        <span class="chartTitle">Temperatur</span>
-        <canvas id="tempChart" width="300" height="200"></canvas>
+        <div class="chartHeader">
+          <div class="valueWrapper">
+            <span class="chartValue">{{ tempIndoor }} °C</span>
+            <span class="chartTitle">Innen</span>
+          </div>
+          <span class="chartType">Temperatur</span>
+          <div class="valueWrapper">
+            <span class="chartValue">{{ tempOutdoor }} °C</span>
+            <span class="chartTitle">Außen</span>
+          </div>
+        </div>
+        <div class="chart">
+          <canvas id="tempChart" width="3000" height="1800"></canvas>
+        </div>
       </div>
       <div class="chartBox">
-        <span class="chartValue">{{ humIndoor }} %</span>
-        <span class="chartTitle">Luftfeuchtigkeit</span>
-        <canvas id="humChart" width="300" height="200"></canvas>
+        <div class="chartHeader">
+          <div class="valueWrapper">
+            <span class="chartValue">{{ humIndoor }} %</span>
+            <span class="chartTitle">Innen</span>
+          </div>
+          <span class="chartType">Luftfeuchtigkeit</span>
+          <div class="valueWrapper">
+            <span class="chartValue">{{ humOutdoor }} %</span>
+            <span class="chartTitle">Außen</span>
+          </div>
+        </div>
+        <div class="chart">
+          <canvas id="humChart" width="3000" height="1800"></canvas>
+        </div>
       </div>
       <div class="chartBox">
-        <span class="chartValue">{{ co2Indoor }} ppm</span>
-        <span class="chartTitle">Kohlenstoffdioxid</span>
-        <canvas id="co2Chart" width="300" height="200"></canvas>
-      </div>
-    </div>
-  </div>
-  <div class="pageInnerWrapper">
-    <h2>Outdoor</h2>
-    <div class="chartWrapper">
-      <div class="chartBox">
-        <span class="chartValue">{{ tempOutdoor }} °C</span>
-        <span class="chartTitle">Temperatur</span>
-        <canvas id="tempChartOut" width="300" height="200"></canvas>
-      </div>
-      <div class="chartBox">
-        <span class="chartValue">{{ humOutdoor }} %</span>
-        <span class="chartTitle">Luftfeuchtigkeit</span>
-        <canvas id="humChartOut" width="300" height="200"></canvas>
+        <div class="chartHeader">
+          <div class="valueWrapper">
+            <span class="chartValue">{{ presIndoor }} hPa</span>
+            <span class="chartTitle">Innen</span>
+          </div>
+          <span class="chartType">Luftdruck</span>
+          <div class="valueWrapper">
+            <span class="chartValue">{{ presOutdoor }} hPa</span>
+            <span class="chartTitle">Außen</span>
+          </div>
+        </div>
+        <div class="chart">
+          <canvas id="presChart" width="3000" height="1800"></canvas>
+        </div>
       </div>
       <div class="chartBox">
-        <span class="chartValue">{{ co2Outdoor }} ppm</span>
-        <span class="chartTitle">Kohlenstoffdioxid</span>
-        <canvas id="co2ChartOut" width="300" height="200"></canvas>
+        <div class="chartHeader">
+          <div class="valueWrapper">
+            <span class="chartValue">{{ co2Indoor }} ppm</span>
+            <span class="chartTitle">Innen</span>
+          </div>
+          <span class="chartType"
+            >CO<span class="smallNumber">2</span> - Gehalt</span
+          >
+          <div class="valueWrapper">
+            <span class="chartValue">{{ co2Outdoor }} ppm</span>
+            <span class="chartTitle">Außen</span>
+          </div>
+        </div>
+        <div class="chart">
+          <canvas id="co2Chart" width="3000" height="1800"></canvas>
+        </div>
+      </div>
+      <div class="chartBox">
+        <div class="chartHeader">
+          <div class="valueWrapper">
+            <span class="chartValue">Feinstaub PM10</span>
+          </div>
+          <div class="valueWrapper feinstaub">
+            <span class="chartValue">{{ pm10Outdoor }} µg/m³</span>
+            <span class="chartTitle">Außen</span>
+          </div>
+        </div>
+        <div class="chart">
+          <canvas id="pm10Chart" width="3000" height="1800"></canvas>
+        </div>
+      </div>
+      <div class="chartBox">
+        <div class="chartHeader">
+          <div class="valueWrapper">
+            <span class="chartValue">Feinstaub PM2,5</span>
+          </div>
+          <div class="valueWrapper feinstaub">
+            <span class="chartValue">{{ pm25Outdoor }} µg/m³</span>
+            <span class="chartTitle">Außen</span>
+          </div>
+        </div>
+        <div class="chart">
+          <canvas id="pm25Chart" width="3000" height="1800"></canvas>
+        </div>
       </div>
     </div>
   </div>
